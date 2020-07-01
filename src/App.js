@@ -1,36 +1,28 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Container, Grid } from '@material-ui/core'
 import './App.css';
 import MovieSuggest from './components/MovieSuggest/View';
 import SimilarMovies from './components/SimilarMovies/View';
 
-class App extends Component {
-  state = {
-    selectedMovieId: null,
-  };
+const App = () => {
+  const [selectedMovieId, setSelectedMovieId] = useState(null)
 
-  handleMovieSelect = movieId => {
-    this.setState({ selectedMovieId: movieId });
-  };
-
-  render() {
-    return (
-      <Container maxWidth="xl" className='App'>
-        <Grid container spacing={5}>
-          <Grid item xs>
-            <MovieSuggest onMovieSelect={this.handleMovieSelect}></MovieSuggest>
-          </Grid>
+  return (
+    <Container maxWidth="xl" className='App'>
+      <Grid container spacing={5}>
+        <Grid item xs>
+          <MovieSuggest onMovieSelect={setSelectedMovieId}></MovieSuggest>
         </Grid>
-        <Grid container spacing={5}>
-          <Grid item xs>
-            {
-              this.state.selectedMovieId && <SimilarMovies movieId={this.state.selectedMovieId}></SimilarMovies>
-            }
-          </Grid>
+      </Grid>
+      <Grid container spacing={5}>
+        <Grid item xs>
+          {
+            selectedMovieId && <SimilarMovies movieId={selectedMovieId}></SimilarMovies>
+          }
         </Grid>
-      </Container>
-    );
-  }
+      </Grid>
+    </Container>
+  )
 }
 
 export default App;
