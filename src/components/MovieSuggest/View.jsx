@@ -1,43 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { TextField, CircularProgress } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
+import useTheMovieDb from '../../hooks/theMovieDb';
 
 const MovieSuggest = (props) => {
-  const [loading, setLoading] = useState(false)
-  const [options, setOptions] = useState([])
   const [query, setQuery] = useState('')
 
-  useEffect(() => {
-    if (!query) return
+  const [loading, results] = useTheMovieDb(`https://api.themoviedb.org/3/search/movie?api_key=432ea214d5481d224e14b555d6d5869b&language=en-US&query=${query}&page=1&include_adult=false`)
 
-    setLoading(true)
-
-    fetch(`https://api.themoviedb.org/3/search/movie?api_key=432ea214d5481d224e14b555d6d5869b&language=en-US&query=${query}&page=1&include_adult=false`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Could not search movies!');
-        }
-        return response.json();
-      })
-      .then(({ results }) => {
-        const options = results.map(movie => ({ value: movie.id, name: movie.title }))
-        setOptions(options)
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => setLoading(false))
-  }, [query])
-
+  const options = results.map(movie => ({ value: movie.id, name: movie.title }))
 
   return (
     <Autocomplete
       id="asynchronous-demo"
       onChange={(event, newValue) => {
         props.onMovieSelect(newValue?.value)
-        if (!newValue) {
-          setOptions([])
-        }
       }}
       onInputChange={(event, newInputValue) => {
         setQuery(newInputValue)
